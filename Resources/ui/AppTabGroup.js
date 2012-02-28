@@ -2,6 +2,8 @@ function AppTabGroup() {
 	//declaracao de dependencia de outros modulos
 	var AppWindow = require('ui/AppWindow');
 	var MainSearchWindow = require('ui/MainSearchWindow');
+	var MainSearchWindowAnimated = require('ui/MainSearchWindowAnimated');
+
 
 	
 	//create module instance
@@ -9,7 +11,7 @@ function AppTabGroup() {
 	
 	//create app tabs
 	var win1 = new MainSearchWindow(),
-		win2 = new AppWindow('outra'),
+		win2 = new MainSearchWindowAnimated(),
 		win3 = new AppWindow('seilah'),
 		win4 = new AppWindow('bla'),
 		win5 = new AppWindow('ble');
