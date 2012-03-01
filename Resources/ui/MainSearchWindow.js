@@ -75,10 +75,11 @@ function MainSearchWindow(){
 				style: Titanium.UI.iPhone.SystemButtonStyle.PLAIN,
 				borderRadius:10,
 				backgroundGradient:{type:'linear',
-				colors:['#000001','#666666'],
-				startPoint:{x:0,y:0},
-				endPoint:{x:2,y:50},
-				backFillStart:false},
+					colors:['#000001','#666666'],
+					startPoint:{x:0,y:0},
+					endPoint:{x:2,y:50},
+					backFillStart:false
+				},
 				borderWidth:1,
 				borderColor:'#666'
 			});

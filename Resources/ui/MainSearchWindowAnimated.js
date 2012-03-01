@@ -22,7 +22,7 @@ function MainSearchWindowAnimated(){
 		zIndex: 0
 	});
 	
-	var searchView = Ti.UI.createView({
+	var searchViewHolder = Ti.UI.createView({
 		top: 0,
 		height: 200, //alterar se for android
 		backgroundColor: '#fff',
@@ -30,6 +30,31 @@ function MainSearchWindowAnimated(){
 		borderWidth: 1,
 		zIndex: 1
 	});
+	
+	var logoImg = Ti.UI.createImageView({
+		image: 'images/shopfinder-logo.png',
+		top: 75,
+		left: 50,
+		height: 46,
+		width:216,
+		zIndex: 1
+	});
+	searchViewHolder.add(logoImg);
+	
+	var searchViewBar = Ti.UI.createView({
+		bottom: 0,
+		height: 44, //alterar se for android
+		backgroundColor: '#fff',
+		
+		backgroundGradient: {
+			type: 'linear',
+			startPoint: { x: '0%', y: '100%'},
+			endPoint: { x: '0%', y: '0%'},
+			colors: [{ color: '#F4F4F4', offset: 0.0}, { color: '#FFFFFF', offset: 1.0}]
+		},
+		zIndex: 1
+	});
+	searchViewHolder.add(searchViewBar);
 	
 	var btnShowSearch = Ti.UI.createView({
 		bottom: 5,
@@ -47,17 +72,7 @@ function MainSearchWindowAnimated(){
 		});
 		btnShowSearch.add(iconShowSearch);
 	
-	searchView.add(btnShowSearch);
-	
-	var logoImg = Ti.UI.createImageView({
-		image: 'images/shopfinder-logo.png',
-		top: 75,
-		left: 50,
-		height: 46,
-		width:216,
-		zIndex: 1
-	});
-	searchView.add(logoImg);
+	searchViewBar.add(btnShowSearch);
 	
 	//Campo de pesquisa
 	var searchField = Titanium.UI.createTextField({
@@ -73,7 +88,7 @@ function MainSearchWindowAnimated(){
 		borderStyle:Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
 		keyboardType: Ti.UI.KEYBOARD_ASCII
 	});
-	searchView.add(searchField);
+	searchViewBar.add(searchField);
 
 	var closeAnimation = Titanium.UI.createAnimation();
 	closeAnimation.top = -156; //height da searchView (200) - 44
@@ -84,20 +99,21 @@ function MainSearchWindowAnimated(){
 	btnShowSearch.addEventListener('click', function(e) { //click no botao abre/fecha view de pesquisa
 		if(btnShowSearch.isOpen) {
 			btnShowSearch.isOpen = false;
-			searchView.animate(closeAnimation);			
+			searchViewHolder.animate(closeAnimation);			
 		} else {
 			btnShowSearch.isOpen = true;
-			searchView.animate(openAnimation);				
+			searchViewHolder.animate(openAnimation);				
 		}
 	});
 	
 
-	mainView.add(searchView);
+	mainView.add(searchViewHolder);
 
 	
 	//tabela com resultado da pesquisa
 	var tableResult = Ti.UI.createTableView({
 		top: 44,
+		height: self.height - 93,
 		borderColor: 'transparent',
 		backgroundColor: '#F4F4F4',
 		data: data
@@ -108,7 +124,7 @@ function MainSearchWindowAnimated(){
 
 
 	searchField.addEventListener('return', function(e) {
-		searchView.animate(closeAnimation); 
+		searchViewHolder.animate(closeAnimation); 
 		loadData();
 			//simular carregamento de dados
 		// var _ultimaLinha = 1;
@@ -147,12 +163,7 @@ function MainSearchWindowAnimated(){
 				
 				var row = Ti.UI.createTableViewRow({
 					height: 'auto',
-					backgroundGradient: {
-						type: 'linear',
-						startPoint: { x: '0%', y: '100%'},
-						endPoint: { x: '0%', y: '0%'},
-						colors: [{ color: '#F4F4F4', offset: 0.0}, { color: '#FCFCFC', offset: 1.0}]
-					}				
+					backgroundColor: '#FFF'			
 				});
 					
 				var rowView = Ti.UI.createView({height: 60, layout:'vertical', top: 10, right: 10, bottom: 10, left: 10});
