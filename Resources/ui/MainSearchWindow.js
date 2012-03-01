@@ -199,7 +199,7 @@ function MainSearchWindow(){
 			Ti.API.debug(e.error);
          	alert('error');
 		}
-		loader.timeout = 5000;
+		loader.timeout = 10000;
 		loader.send();
 	}
 
