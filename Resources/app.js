@@ -24,5 +24,7 @@ else if (Ti.Platform.osname === 'mobileweb') {
 else {
 	//require and open top level UI component
 	var AppTabGroup = require('ui/AppTabGroup');
-	new AppTabGroup().open();
+	setTimeout(function() {
+		new AppTabGroup().open();
+	}, 2000);
 }
