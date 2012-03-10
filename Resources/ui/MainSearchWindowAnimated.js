@@ -157,6 +157,34 @@ function MainSearchWindowAnimated(){
 		//self.containingTab.animate({view:detailWindow,transition:t});
 		self.containingTab.open(detailWindow);
 	});
+	
+	//status indicator
+	var statusIndicatorView = Ti.UI.createView({height: 40, backgroundColor: '#6F6F75'});	
+	var activityIndicator = Ti.UI.createActivityIndicator({
+	  color: '#fff',
+	  font: {fontFamily:'Helvetica Neue', fontSize:12, fontWeight:'bold'},
+	  message: 'Carregando...',
+	  style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
+	  top:10,
+	  left:95,
+	  height:'auto',
+	  width:'auto'
+	});
+	statusIndicatorView.add(activityIndicator);
+	tableResult.setHeaderView(statusIndicatorView);
+
+	
+	Ti.addEventListener('shopfinder:activity_indicator.start', function (e) {
+		  tableResult.headerView = statusIndicatorView;
+		  activityIndicator.show();
+	});	
+
+	Ti.addEventListener('shopfinder:activity_indicator.stop', function (e) {		
+		  setTimeout(function(){
+		   tableResult.headerView = null;
+		   activityIndicator.hide();
+		  }, 6000);
+	});	
 
 
 	searchField.addEventListener('return', function(e) {
