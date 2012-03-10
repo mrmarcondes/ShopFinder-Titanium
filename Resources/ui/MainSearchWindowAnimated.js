@@ -44,7 +44,7 @@ function MainSearchWindowAnimated(){
 	
 	var searchViewBar = Ti.UI.createView({
 		bottom: 0,
-		height: 44, //alterar se for android
+		height: 44,
 		backgroundColor: '#fff',
 		
 		backgroundGradient: {
@@ -135,7 +135,7 @@ function MainSearchWindowAnimated(){
 		Ti.API.info('linha clicada! ' + e.row.title);
 		var detailWindow = Ti.UI.createWindow({
 			navBarHidden: false,
-			title:'detalhe',
+			title:'detalhe shopping',
 			barColor: '#0181EB',
 			borderColor: '#E5E3DC',
 			layout:'vertical',
@@ -152,6 +152,9 @@ function MainSearchWindowAnimated(){
 		});
 		tt.add(texto);
 		detailWindow.add(tt);
+		
+		//var t = Ti.UI.iPhone.AnimationStyle.FLIP_FROM_LEFT;
+		//self.containingTab.animate({view:detailWindow,transition:t});
 		self.containingTab.open(detailWindow);
 	});
 
@@ -243,7 +246,7 @@ function MainSearchWindowAnimated(){
 					color: '#999CA3',
 					//font: {fontFamily:'Aller Light', fontSize: 10}
 					font: {fontFamily:'Myriad Pro', fontSize: 10}
-									});
+				});
 				rowView.add(rowAddress);				
 				
 				row.add(rowView);
