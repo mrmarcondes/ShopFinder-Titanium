@@ -1,13 +1,14 @@
 function MainSearchWindowAnimated(){
 	var _ = require('/lib/underscore'); //Modulo externo prar algumas magicas com JS
 
-	var data = []; //armazena resultado da pesquisa
+	var data = [], firstLoad = true; //armazena resultado da pesquisa
+	
 
 	var self = Ti.UI.createWindow({
 		navBarHidden: true,
 		layout:'vertical',
 		borderWidth: 0,
-		backgroundColor: '#F2F2F2'
+		backgroundColor: '#414144'
 	});
 
 
@@ -28,7 +29,7 @@ function MainSearchWindowAnimated(){
 		backgroundColor: '#fff',
 		borderColor: 'transparent',
 		borderWidth: 1,
-		zIndex: 1
+		zIndex: 2
 	});
 	
 	var logoImg = Ti.UI.createImageView({
@@ -37,7 +38,7 @@ function MainSearchWindowAnimated(){
 		left: 50,
 		height: 46,
 		width:216,
-		zIndex: 1
+		zIndex: 2
 	});
 	searchViewHolder.add(logoImg);
 	
@@ -52,7 +53,7 @@ function MainSearchWindowAnimated(){
 			endPoint: { x: '0%', y: '0%'},
 			colors: [{ color: '#F4F4F4', offset: 0.0}, { color: '#FFFFFF', offset: 1.0}]
 		},
-		zIndex: 1
+		zIndex: 2
 	});
 	searchViewHolder.add(searchViewBar);
 	
@@ -62,7 +63,7 @@ function MainSearchWindowAnimated(){
 		height: 35,
 		width: 40,
 		backgroundColor: 'transparent',
-		zIndex: 1,
+		zIndex: 2,
 		isOpen: true
 	});
 		var iconShowSearch = Ti.UI.createImageView({
@@ -106,24 +107,60 @@ function MainSearchWindowAnimated(){
 		}
 	});
 	
-
 	mainView.add(searchViewHolder);
+
+	var initialBackgroundView = Ti.UI.createView({
+		top: 0,
+		height: self.height,
+		backgroundColor: '#54545B',
+		borderWidth: 1,
+		zIndex: 1
+	});
+	mainView.add(initialBackgroundView);
 
 	
 	//tabela com resultado da pesquisa
 	var tableResult = Ti.UI.createTableView({
 		top: 44,
 		height: self.height - 93,
-		borderColor: 'transparent',
-		backgroundColor: '#F4F4F4',
+    	borderWidth: 0,
+    	borderColor: 'transparent',
+		backgroundColor: '#FFF',
 		data: data
+	});
+	mainView.add(tableResult);
+	
+	//exibir detalhes quando linha clicada
+	tableResult.addEventListener('click', function(e) {
+		Ti.API.info('linha clicada! ' + e.row.title);
+		var detailWindow = Ti.UI.createWindow({
+			navBarHidden: false,
+			title:'detalhe',
+			barColor: '#0181EB',
+			borderColor: '#E5E3DC',
+			layout:'vertical',
+			borderWidth: 0,
+			backgroundColor: '#F2F2F2'
+		});
+
+		var tt = Ti.UI.createView({
+			height: 50,
+			backgroundColor: 'yellow'
+		});
+		texto = Ti.UI.createLabel({
+			text: 'texto de teste'
+		});
+		tt.add(texto);
+		detailWindow.add(tt);
+		self.containingTab.open(detailWindow);
 	});
 
 
-	mainView.add(tableResult);
-
-
 	searchField.addEventListener('return', function(e) {
+		if(firstLoad) {
+			firstLoad = false;
+			mainView.remove(initialBackgroundView);
+		}
 		searchViewHolder.animate(closeAnimation); 
 		loadData();
 			//simular carregamento de dados
@@ -176,9 +213,9 @@ function MainSearchWindowAnimated(){
 					left: 0,
 					height: 40,
 					width:65,
-					backgroudColor: 'grey',
-					borderColor: 'grey',
-					borderWidth: 2
+					backgroundColor: '#EDEDED',
+					borderColor: '#E5E5E5',
+					borderWidth: 1
 				});
 				rowView.add(rowImg);
 				
@@ -188,10 +225,10 @@ function MainSearchWindowAnimated(){
 					width: 200,
 					top: -40,
 					bottom: 2,
-					height: 16,
+					height: 22,
 					textAlign: 'left',
-					color: '#404351',
-					font: {fontaFamily:'Helvetica Neue', fontSize: 13, fontWeight: 'bold'}
+					color: '#2A2C38',
+					font: {fontFamily:'Myriad Pro', fontSize: 19}
 				});
 				rowView.add(rowTitle);
 
@@ -203,9 +240,10 @@ function MainSearchWindowAnimated(){
 					bottom: 2,
 					height: 16,
 					textAlign: 'left',
-					color: '#999999',
-					font: {fontaFamily:'Helvetica Neue', fontSize: 10, fontWeight: 'normal'}
-				});
+					color: '#999CA3',
+					//font: {fontFamily:'Aller Light', fontSize: 10}
+					font: {fontFamily:'Myriad Pro', fontSize: 10}
+									});
 				rowView.add(rowAddress);				
 				
 				row.add(rowView);

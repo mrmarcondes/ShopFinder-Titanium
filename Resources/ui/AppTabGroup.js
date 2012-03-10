@@ -10,8 +10,8 @@ function AppTabGroup() {
 	var self = Ti.UI.createTabGroup();
 	
 	//create app tabs
-	var win1 = new MainSearchWindow(),
-		win2 = new MainSearchWindowAnimated(),
+	var win1 = new MainSearchWindowAnimated(),
+		win2 = new MainSearchWindow(),
 		win3 = new AppWindow('seilah'),
 		win4 = new AppWindow('bla'),
 		win5 = new AppWindow('ble');
