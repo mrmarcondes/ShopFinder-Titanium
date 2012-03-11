@@ -56,6 +56,16 @@ function MainSearchWindowAnimated(){
 	});
 	searchViewHolder.add(searchViewBar);
 	
+		
+	var barDropShadow = Ti.UI.createImageView({
+		backgroundImage: 'images/bar-shadow.png',
+		height: 13,
+		width: self.width,
+		bottom: -13
+	});
+	searchViewBar.add(barDropShadow);
+	
+	
 	var btnShowSearch = Ti.UI.createView({
 		bottom: 5,
 		right: 5,
@@ -66,12 +76,12 @@ function MainSearchWindowAnimated(){
 		isOpen: true
 	});
 		var iconShowSearch = Ti.UI.createImageView({
-			image: 'images/icons/06-magnify.png',
+			image: 'images/icons/magnify.png',
 			height: 16,
 			width: 16
 		});
 		btnShowSearch.add(iconShowSearch);
-	
+			
 	searchViewBar.add(btnShowSearch);
 	
 	//Campo de pesquisa
@@ -84,31 +94,64 @@ function MainSearchWindowAnimated(){
 		bottom:5,
 		left:5,
 		width: self.width - 55,
-		borderStyle:Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
-		keyboardType: Ti.UI.KEYBOARD_ASCII,
 		color: '#393A47',
 		font: {fontFamily:'Myriad Pro', fontSize: 19},
-		verticalAlign: Ti.UI.TEXT_VERTICAL_ALIGNMENT_CENTER
+		verticalAlign: Ti.UI.TEXT_VERTICAL_ALIGNMENT_CENTER,
+		borderStyle: Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
+		keyboardType: Ti.UI.KEYBOARD_ASCII,
+		returnKeyType: Titanium.UI.RETURNKEY_SEARCH
 	});
 	searchViewBar.add(searchField);
+	
+		
+	var logoImgBar = Ti.UI.createImageView({
+		image: 'images/shopfinder-logo-bar.png',
+		top: 10,
+		left: 95,
+		height: 23,
+		width:108,
+		zIndex: 2,
+		opacity: 0.0
+	});
+	searchViewBar.add(logoImgBar);
+
 
 	var closeAnimation = Titanium.UI.createAnimation();
-	closeAnimation.top = -156; //height da searchView (200) - 44
-	closeAnimation.curve = Ti.UI.iOS.ANIMATION_CURVE_EASE_IN_OUT;
+		closeAnimation.top = -156; //height da searchView (200) - 44
+		closeAnimation.curve = Ti.UI.iOS.ANIMATION_CURVE_EASE_IN_OUT;
 
 	var openAnimation = Titanium.UI.createAnimation();
-	openAnimation.top = 0; //height da searchView (200) - 44
-	openAnimation.curve = Ti.UI.iOS.ANIMATION_CURVE_EASE_IN_OUT;
+		openAnimation.top = 0;
+		openAnimation.curve = Ti.UI.iOS.ANIMATION_CURVE_EASE_IN_OUT;
+
+	var fadeInAnimation = Titanium.UI.createAnimation();
+		fadeInAnimation.opacity = 1.0;
+		fadeInAnimation.duration = 400;
+
+	var fadeOutAnimation = Titanium.UI.createAnimation();
+		fadeOutAnimation.opacity = 0.0;
+		fadeOutAnimation.duration = 400;
+
 
 	btnShowSearch.addEventListener('click', function(e) { //click no botao abre/fecha view de pesquisa
+		Ti.fireEvent('shopfinder:search_bar.show_hide');
+	});
+	
+	Ti.addEventListener('shopfinder:search_bar.show_hide', function (e) {
 		if(btnShowSearch.isOpen) {
 			btnShowSearch.isOpen = false;
-			searchViewHolder.animate(closeAnimation);			
+			searchViewHolder.animate(closeAnimation);
+			searchField.animate(fadeOutAnimation);
+			logoImgBar.animate(fadeInAnimation);
+			searchField.blur();
 		} else {
 			btnShowSearch.isOpen = true;
-			searchViewHolder.animate(openAnimation);				
+			searchViewHolder.animate(openAnimation);
+			searchField.animate(fadeInAnimation);
+			logoImgBar.animate(fadeOutAnimation);
 		}
 	});	
+			
 	
 	mainView.add(searchViewHolder);
 
@@ -234,6 +277,7 @@ function MainSearchWindowAnimated(){
 
 
 	function loadData(){
+		Ti.fireEvent('shopfinder:search_bar.show_hide');
 		Ti.fireEvent('shopfinder:activity_indicator.start');
 		var loader = Ti.Network.createHTTPClient();
 		loader.open('GET', 'http://shopfinder.com.br/shoppings.json');
@@ -244,7 +288,9 @@ function MainSearchWindowAnimated(){
 				
 				var row = Ti.UI.createTableViewRow({
 					height: 'auto',
-					backgroundColor: '#FFF'			
+					backgroundColor: '#FFF',
+					selectedBackgroundColor: '#f4f4f4'
+					//selectionStyle: Titanium.UI.iPhone.TableViewCellSelectionStyle.GRAY
 				});
 					
 				var rowView = Ti.UI.createView({height: 60, layout:'vertical', top: 10, right: 10, bottom: 10, left: 10});
