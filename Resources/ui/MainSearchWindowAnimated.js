@@ -46,7 +46,6 @@ function MainSearchWindowAnimated(){
 		bottom: 0,
 		height: 44,
 		backgroundColor: '#fff',
-		
 		backgroundGradient: {
 			type: 'linear',
 			startPoint: { x: '0%', y: '100%'},
@@ -80,22 +79,26 @@ function MainSearchWindowAnimated(){
 		hintText:'procure por shopping ou loja',
 		clearOnEdit: true,
 		clearButtonMode: Ti.UI.INPUT_BUTTONMODE_ONFOCUS,
-		color:'#336699',
 		autocapitalization: false,
 		height:35,
 		bottom:5,
 		left:5,
 		width: self.width - 55,
 		borderStyle:Ti.UI.INPUT_BORDERSTYLE_ROUNDED,
-		keyboardType: Ti.UI.KEYBOARD_ASCII
+		keyboardType: Ti.UI.KEYBOARD_ASCII,
+		color: '#393A47',
+		font: {fontFamily:'Myriad Pro', fontSize: 19},
+		verticalAlign: Ti.UI.TEXT_VERTICAL_ALIGNMENT_CENTER
 	});
 	searchViewBar.add(searchField);
 
 	var closeAnimation = Titanium.UI.createAnimation();
 	closeAnimation.top = -156; //height da searchView (200) - 44
+	closeAnimation.curve = Ti.UI.iOS.ANIMATION_CURVE_EASE_IN_OUT;
 
 	var openAnimation = Titanium.UI.createAnimation();
 	openAnimation.top = 0; //height da searchView (200) - 44
+	openAnimation.curve = Ti.UI.iOS.ANIMATION_CURVE_EASE_IN_OUT;
 
 	btnShowSearch.addEventListener('click', function(e) { //click no botao abre/fecha view de pesquisa
 		if(btnShowSearch.isOpen) {
@@ -105,7 +108,7 @@ function MainSearchWindowAnimated(){
 			btnShowSearch.isOpen = true;
 			searchViewHolder.animate(openAnimation);				
 		}
-	});
+	});	
 	
 	mainView.add(searchViewHolder);
 
@@ -161,29 +164,39 @@ function MainSearchWindowAnimated(){
 	//status indicator
 	var statusIndicatorView = Ti.UI.createView({height: 40, backgroundColor: '#6F6F75'});	
 	var activityIndicator = Ti.UI.createActivityIndicator({
-	  color: '#fff',
-	  font: {fontFamily:'Helvetica Neue', fontSize:12, fontWeight:'bold'},
-	  message: 'Carregando...',
-	  style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
-	  top:10,
-	  left:95,
-	  height:'auto',
-	  width:'auto'
+		color: '#fff',
+		font: {fontFamily:'Helvetica Neue', fontSize:12, fontWeight:'bold'},
+		message: 'Carregando...',
+		style:Ti.UI.iPhone.ActivityIndicatorStyle.PLAIN,
+		top:10,
+		left:95,
+		height:'auto',
+		width:'auto'
 	});
 	statusIndicatorView.add(activityIndicator);
 	tableResult.setHeaderView(statusIndicatorView);
 
 	
 	Ti.addEventListener('shopfinder:activity_indicator.start', function (e) {
-		  tableResult.headerView = statusIndicatorView;
-		  activityIndicator.show();
+		tableResult.scrollToIndex(0,{animated:true});	
+		tableResult.setHeaderView(statusIndicatorView);
+		activityIndicator.show();
 	});	
 
 	Ti.addEventListener('shopfinder:activity_indicator.stop', function (e) {		
 		  setTimeout(function(){
-		   tableResult.headerView = null;
-		   activityIndicator.hide();
-		  }, 6000);
+		   var fadeOut = Titanium.UI.createAnimation({
+			    opacity: 0,
+			    duration: 200
+		   });
+		   statusIndicatorView.animate(fadeOut);
+
+		   fadeOut.addEventListener('complete', function(e){
+		   		tableResult.headerView = null;
+		   		activityIndicator.hide();
+		   });
+
+		  }, 2000);
 	});	
 
 
@@ -236,36 +249,36 @@ function MainSearchWindowAnimated(){
 					
 				var rowView = Ti.UI.createView({height: 60, layout:'vertical', top: 10, right: 10, bottom: 10, left: 10});
 				
-				
 				//imagem logo da linha
-				var rowImg = Ti.UI.createImageView({
-					//image: 'images/img_logo.png',
-					top: 0,
-					left: 0,
-					height: 40,
-					width:65,
-					backgroundColor: '#EDEDED',
-					borderColor: '#E5E5E5',
-					borderWidth: 1
-				});
-				rowView.add(rowImg);
+				// var rowImg = Ti.UI.createImageView({
+					// //image: 'images/img_logo.png',
+					// top: 0,
+					// left: 0,
+					// height: 40,
+					// width:65,
+					// backgroundColor: '#EDEDED',
+					// borderColor: '#E5E5E5',
+					// borderWidth: 1
+				// });
+				// rowView.add(rowImg);
 				
 				var rowTitle = Ti.UI.createLabel({
 					text: '' + shopping.name,
-					left: 75,
-					width: 200,
-					top: -40,
+					left: 0, //75
+					width: 260,
+					top: 0, //-40
 					bottom: 2,
-					height: 22,
+					height: 24,
 					textAlign: 'left',
 					color: '#2A2C38',
-					font: {fontFamily:'Myriad Pro', fontSize: 19}
+					font: {fontFamily:'Myriad Pro', fontSize: 18}
 				});
 				rowView.add(rowTitle);
 
-				var rowAddress = Ti.UI.createLabel({
-					text: '' + shopping.address.city + ' - ' + shopping.address.state,
-					left: 75,
+
+				var rowAddressStreet = Ti.UI.createLabel({
+					text: '' + shopping.address.street + ', ' + shopping.address.number + ' - ' + shopping.address.neighborhood,
+					left: 0, //75
 					width: 260,
 					top: 0,
 					bottom: 2,
@@ -273,7 +286,22 @@ function MainSearchWindowAnimated(){
 					textAlign: 'left',
 					color: '#999CA3',
 					//font: {fontFamily:'Aller Light', fontSize: 10}
-					font: {fontFamily:'Myriad Pro', fontSize: 10}
+					font: {fontFamily:'Myriad Pro', fontSize: 12}
+				});
+				rowView.add(rowAddressStreet);	
+
+				
+				var rowAddress = Ti.UI.createLabel({
+					text: '' + shopping.address.city + ' - ' + shopping.address.state,
+					left: 0, //75
+					width: 260,
+					top: 0,
+					bottom: 2,
+					height: 16,
+					textAlign: 'left',
+					color: '#999CA3',
+					//font: {fontFamily:'Aller Light', fontSize: 10}
+					font: {fontFamily:'Myriad Pro', fontSize: 12}
 				});
 				rowView.add(rowAddress);				
 				

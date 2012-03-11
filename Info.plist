@@ -25,8 +25,9 @@
 	<string>br.com.shopfinder</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>MyriadPro-Light.ttf</string>
 		<string>Aller_Lt.ttf</string>
+		<string>MyriadPro-Bold.ttf</string>
+		<string>MyriadPro-Light.ttf</string>
 	</array>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
